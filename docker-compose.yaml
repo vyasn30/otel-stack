@@ -6,6 +6,9 @@ services:
       - "9090:9090"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yaml   # image default is .yml; point it at our .yaml
+      - --storage.tsdb.path=/prometheus
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yaml:ro   # mounted, not baked
       - prometheus-data:/prometheus
@@ -20,6 +23,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro
       - grafana-data:/var/lib/grafana
     restart: unless-stopped
     depends_on:
@@ -28,3 +32,9 @@ services:
 volumes:
   prometheus-data:
   grafana-data:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 192.168.48.0/20   # pinned so the ufw rule for :8889 stays valid
