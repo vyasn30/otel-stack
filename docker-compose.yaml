@@ -18,7 +18,7 @@ services:
     image: grafana/grafana:11.6.0
     container_name: grafana
     ports:
-      - "3000:3000"
+      - "3300:3000"   # host 3000 is taken by node-ping (pid 1921); container port unchanged
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
@@ -41,6 +41,15 @@ services:
         - ./tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
         - tempo-data:/var/tempo
       restart: unless-stopped
+
+  jaeger:
+    image: jaegertracing/jaeger:2.20.0
+    container_name: jaeger
+    ports:
+      - "16686:16686"      # UI
+      - "24317:4317"       # OTLP gRPC (4317=collector, 14317=tempo already taken)
+      - "24318:4318"       # OTLP HTTP
+    restart: unless-stopped
 
 volumes:
   prometheus-data:

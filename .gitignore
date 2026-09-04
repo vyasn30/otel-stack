@@ -1,0 +1,13 @@
+# Nested git repo — vendored checkout of the mw-injector library, tracked by
+# its own .git. Committing it here would capture neither its contents nor its
+# history, so keep it out entirely.
+mw-injector/
+
+# Editor leftovers
+*.swp
+*.swo
+.zed/
+.idea/
+
+# Config backups written by install-otelcol-obi.sh
+*.bak.*
